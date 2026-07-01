@@ -11,6 +11,11 @@ export const envSchema = z.object({
 
   JWT_SECRET: z.string().min(16, 'JWT_SECRET must be at least 16 characters'),
   JWT_EXPIRES_IN: z.string().default('1d'),
+
+  ADMIN_EMAIL: z.string().email(),
+  ADMIN_PASSWORD: z
+    .string()
+    .min(8, 'ADMIN_PASSWORD must be at least 8 characters'),
 });
 
 export type EnvConfig = z.infer<typeof envSchema>;
