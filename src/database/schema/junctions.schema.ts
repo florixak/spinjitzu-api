@@ -14,7 +14,7 @@ export const charactersToElements = pgTable(
     elementId: integer('element_id')
       .notNull()
       .references(() => elements.id, { onDelete: 'cascade' }),
-    isActive: boolean('is_active').default(true),
+    isActive: boolean('is_active').notNull().default(true),
   },
   (table) => [primaryKey({ columns: [table.characterId, table.elementId] })],
 );
