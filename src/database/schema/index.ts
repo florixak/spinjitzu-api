@@ -12,3 +12,17 @@ export {
   weaponsToSeasons,
 } from './junctions.schema';
 export { users } from './users.schema';
+
+export {
+  charactersRelations,
+  charactersToElementsRelations,
+  charactersToSeasonsRelations,
+  charactersToWeaponsRelations,
+  elementsRelations,
+  locationsRelations,
+  locationsToSeasonsRelations,
+  realmsRelations,
+  seasonsRelations,
+  weaponsRelations,
+  weaponsToSeasonsRelations,
+} from './relations.schema';
