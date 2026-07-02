@@ -1,12 +1,13 @@
 import { Module } from '@nestjs/common';
+import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
-import { validate } from './config/env.validation';
-import { AppConfigModule } from './config/config.module';
-import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
 import { CharactersModule } from './characters/characters.module';
+import { AppConfigModule } from './config/config.module';
+import { validate } from './config/env.validation';
+import { DatabaseModule } from './database/database.module';
+import { RealmsModule } from './realms/realms.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { CharactersModule } from './characters/characters.module';
     DatabaseModule,
     AuthModule,
     CharactersModule,
+    RealmsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
