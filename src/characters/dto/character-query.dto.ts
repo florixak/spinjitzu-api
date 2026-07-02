@@ -1,7 +1,15 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
-import { IsIn, IsInt, IsOptional, IsString, Min } from 'class-validator';
+import {
+  IsEnum,
+  IsIn,
+  IsInt,
+  IsOptional,
+  IsString,
+  Min,
+} from 'class-validator';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
+import { CharacterStatus } from '../enums/character-status.enum';
 
 const SORTABLE_FIELDS = ['name', 'status', 'species', 'createdAt'] as const;
 
@@ -18,10 +26,13 @@ export class CharacterQueryDto extends PaginationQueryDto {
   @IsString()
   element?: string;
 
-  @ApiPropertyOptional({ description: 'Character status, e.g. Alive' })
+  @ApiPropertyOptional({
+    enum: CharacterStatus,
+    description: 'Character status',
+  })
   @IsOptional()
-  @IsString()
-  status?: string;
+  @IsEnum(CharacterStatus)
+  status?: CharacterStatus;
 
   @ApiPropertyOptional({ description: 'Season number, e.g. 4' })
   @IsOptional()

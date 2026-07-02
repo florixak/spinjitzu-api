@@ -1,5 +1,8 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsArray, IsInt, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsArray, IsEnum, IsInt, IsOptional, IsString } from 'class-validator';
+import { CharacterSpecies } from '../enums/character-species.enum';
+import { CharacterStatus } from '../enums/character-status.enum';
 
 export class CreateCharacterDto {
   @ApiProperty({ example: 'Kai' })
@@ -12,18 +15,25 @@ export class CreateCharacterDto {
   @IsString({ each: true })
   aliases?: string[];
 
-  @ApiPropertyOptional({ example: 'Human' })
+  @ApiPropertyOptional({
+    enum: CharacterSpecies,
+    example: CharacterSpecies.HUMAN,
+  })
   @IsOptional()
-  @IsString()
-  species?: string;
+  @IsEnum(CharacterSpecies)
+  species?: CharacterSpecies;
 
-  @ApiPropertyOptional({ example: 'Alive' })
+  @ApiPropertyOptional({
+    enum: CharacterStatus,
+    example: CharacterStatus.ALIVE,
+  })
   @IsOptional()
-  @IsString()
-  status?: string;
+  @IsEnum(CharacterStatus)
+  status?: CharacterStatus;
 
   @ApiPropertyOptional()
   @IsOptional()
+  @Type(() => Number)
   @IsInt()
   debutSeasonId?: number;
 }
