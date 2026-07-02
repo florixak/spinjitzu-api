@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { DATABASE_CONNECTION } from 'src/database/database.module';
 import { CharactersService } from './characters.service';
 
 describe('CharactersService', () => {
@@ -6,7 +7,13 @@ describe('CharactersService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [CharactersService],
+      providers: [
+        CharactersService,
+        {
+          provide: DATABASE_CONNECTION,
+          useValue: {},
+        },
+      ],
     }).compile();
 
     service = module.get<CharactersService>(CharactersService);
