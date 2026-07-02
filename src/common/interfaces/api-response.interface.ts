@@ -1,6 +1,13 @@
+import { PaginationMeta } from './pagination-meta.interface';
+
 export interface ApiSuccessResponse<T> {
   data: T;
   meta: Record<string, unknown>;
+}
+
+export interface ApiSuccessResponseWithPagination<T> {
+  data: T;
+  meta: PaginationMeta;
 }
 
 export interface ApiErrorResponse {
