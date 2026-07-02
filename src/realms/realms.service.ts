@@ -1,10 +1,11 @@
 import {
   BadRequestException,
+  ConflictException,
   Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { and, asc, count, desc, eq, ilike, SQL } from 'drizzle-orm';
+import { and, asc, count, desc, eq, ilike, ne, SQL } from 'drizzle-orm';
 import { ApiSuccessResponseWithPagination } from 'src/common/interfaces/api-response.interface';
 import { PaginationMeta } from 'src/common/interfaces/pagination-meta.interface';
 import type { Database } from 'src/database/database-connection';
@@ -25,10 +26,13 @@ export class RealmsService {
   constructor(@Inject(DATABASE_CONNECTION) private readonly db: Database) {}
 
   async create(createRealmDto: CreateRealmDto): Promise<RealmDetailDto> {
+    await this.assertNameAvailable(createRealmDto.name);
+
     const [realm] = await this.db
       .insert(realms)
       .values(createRealmDto)
       .returning();
+
     return {
       id: realm.id,
       name: realm.name,
@@ -69,7 +73,7 @@ export class RealmsService {
       .from(realms)
       .where(whereClause);
 
-    const [data, [{ total }]] = await Promise.all([dataQuery, countQuery]);
+    const [rows, [{ total }]] = await Promise.all([dataQuery, countQuery]);
 
     const meta: PaginationMeta = {
       page,
@@ -79,7 +83,7 @@ export class RealmsService {
     };
 
     return {
-      data: data.map((row) => ({
+      data: rows.map((row) => ({
         id: row.id,
         name: row.name,
         description: row.description,
@@ -91,12 +95,16 @@ export class RealmsService {
   }
 
   async findOne(id: number): Promise<RealmDetailDto> {
-    const realm = await this.db.query.realms.findFirst({
-      where: eq(realms.id, id),
-    });
+    const [realm] = await this.db
+      .select()
+      .from(realms)
+      .where(eq(realms.id, id))
+      .limit(1);
+
     if (!realm) {
       throw new NotFoundException(`Realm with id ${id} not found`);
     }
+
     return {
       id: realm.id,
       name: realm.name,
@@ -114,14 +122,20 @@ export class RealmsService {
       throw new BadRequestException('At least one field must be provided');
     }
 
+    if (updateRealmDto.name !== undefined) {
+      await this.assertNameAvailable(updateRealmDto.name, id);
+    }
+
     const [realm] = await this.db
       .update(realms)
       .set(updateRealmDto)
       .where(eq(realms.id, id))
       .returning();
+
     if (!realm) {
       throw new NotFoundException(`Realm with id ${id} not found`);
     }
+
     return {
       id: realm.id,
       name: realm.name,
@@ -132,12 +146,33 @@ export class RealmsService {
   }
 
   async remove(id: number): Promise<void> {
-    const result = await this.db
+    const [deleted] = await this.db
       .delete(realms)
       .where(eq(realms.id, id))
       .returning();
-    if (result.length === 0) {
+
+    if (!deleted) {
       throw new NotFoundException(`Realm with id ${id} not found`);
+    }
+  }
+
+  private async assertNameAvailable(
+    name: string,
+    excludeId?: number,
+  ): Promise<void> {
+    const conditions = [eq(realms.name, name)];
+    if (excludeId !== undefined) {
+      conditions.push(ne(realms.id, excludeId));
+    }
+
+    const [existing] = await this.db
+      .select({ id: realms.id })
+      .from(realms)
+      .where(and(...conditions))
+      .limit(1);
+
+    if (existing) {
+      throw new ConflictException(`Realm with name '${name}' already exists`);
     }
   }
 }
