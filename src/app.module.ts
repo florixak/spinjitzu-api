@@ -6,6 +6,7 @@ import { validate } from './config/env.validation';
 import { AppConfigModule } from './config/config.module';
 import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './auth/auth.module';
+import { CharactersModule } from './characters/characters.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { AuthModule } from './auth/auth.module';
     AppConfigModule,
     DatabaseModule,
     AuthModule,
+    CharactersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
