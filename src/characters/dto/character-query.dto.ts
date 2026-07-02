@@ -44,5 +44,5 @@ export class CharacterQueryDto extends PaginationQueryDto {
   @ApiPropertyOptional({ enum: SORTABLE_FIELDS, default: 'name' })
   @IsOptional()
   @IsIn(SORTABLE_FIELDS)
-  sortBy?: (typeof SORTABLE_FIELDS)[number] = 'name';
+  declare sortBy?: (typeof SORTABLE_FIELDS)[number];
 }
