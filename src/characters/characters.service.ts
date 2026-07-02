@@ -207,6 +207,10 @@ export class CharactersService {
     id: number,
     dto: UpdateCharacterDto,
   ): Promise<CharacterDetailDto> {
+    if (Object.keys(dto).length === 0) {
+      throw new BadRequestException('At least one field must be provided');
+    }
+
     if (dto.debutSeasonId != null) {
       await this.assertDebutSeasonExists(dto.debutSeasonId);
     }
