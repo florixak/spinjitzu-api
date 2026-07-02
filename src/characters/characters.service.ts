@@ -3,7 +3,10 @@ import type { Database } from 'src/database/database-connection';
 import { DATABASE_CONNECTION } from 'src/database/database.module';
 import { CreateCharacterDto } from './dto/create-character.dto';
 import { UpdateCharacterDto } from './dto/update-character.dto';
-import { CharacterDetailDto } from './dto/character-response.dto';
+import {
+  CharacterDetailDto,
+  CharacterListItemDto,
+} from './dto/character-response.dto';
 import {
   characters,
   charactersToElements,
@@ -17,6 +20,7 @@ import { eq, ilike, and, desc, asc, count, exists, SQL } from 'drizzle-orm';
 
 import { CharacterQueryDto } from './dto/character-query.dto';
 import { PaginationMeta } from 'src/common/interfaces/pagination-meta.interface';
+import { PaginationResponse } from 'src/common/dto/pagination-response.dto';
 
 const SORT_COLUMN_MAP = {
   name: characters.name,
@@ -29,15 +33,29 @@ const SORT_COLUMN_MAP = {
 export class CharactersService {
   constructor(@Inject(DATABASE_CONNECTION) private readonly db: Database) {}
 
-  async create(dto: CreateCharacterDto) {
+  async create(dto: CreateCharacterDto): Promise<CharacterDetailDto> {
     const [character] = await this.db
       .insert(characters)
       .values(dto)
       .returning();
-    return character;
+    return {
+      id: character.id,
+      name: character.name,
+      aliases: character.aliases,
+      species: character.species,
+      status: character.status,
+      createdAt: character.createdAt,
+      updatedAt: character.updatedAt,
+      debutSeasonId: character.debutSeasonId,
+      elements: [],
+      weapons: [],
+      seasons: [],
+    };
   }
 
-  async findAll(query: CharacterQueryDto) {
+  async findAll(
+    query: CharacterQueryDto,
+  ): Promise<PaginationResponse<CharacterListItemDto>> {
     const {
       page = 1,
       limit = 20,
@@ -174,7 +192,10 @@ export class CharactersService {
     };
   }
 
-  async update(id: number, dto: UpdateCharacterDto) {
+  async update(
+    id: number,
+    dto: UpdateCharacterDto,
+  ): Promise<CharacterDetailDto> {
     const [updated] = await this.db
       .update(characters)
       .set(dto)
@@ -184,7 +205,19 @@ export class CharactersService {
     if (!updated) {
       throw new NotFoundException(`Character with id ${id} not found`);
     }
-    return updated;
+    return {
+      id: updated.id,
+      name: updated.name,
+      aliases: updated.aliases,
+      species: updated.species,
+      status: updated.status,
+      debutSeasonId: updated.debutSeasonId,
+      createdAt: updated.createdAt,
+      updatedAt: updated.updatedAt,
+      elements: [],
+      weapons: [],
+      seasons: [],
+    };
   }
 
   async remove(id: number): Promise<void> {
