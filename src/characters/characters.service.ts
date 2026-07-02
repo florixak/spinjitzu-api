@@ -1,12 +1,12 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
+import { and, asc, count, desc, eq, exists, ilike, SQL } from 'drizzle-orm';
 import type { Database } from 'src/database/database-connection';
 import { DATABASE_CONNECTION } from 'src/database/database.module';
-import { CreateCharacterDto } from './dto/create-character.dto';
-import { UpdateCharacterDto } from './dto/update-character.dto';
-import {
-  CharacterDetailDto,
-  CharacterListItemDto,
-} from './dto/character-response.dto';
 import {
   characters,
   charactersToElements,
@@ -16,11 +16,16 @@ import {
   seasons,
   weapons,
 } from 'src/database/schema';
-import { eq, ilike, and, desc, asc, count, exists, SQL } from 'drizzle-orm';
+import {
+  CharacterDetailDto,
+  CharacterListItemDto,
+} from './dto/character-response.dto';
+import { CreateCharacterDto } from './dto/create-character.dto';
+import { UpdateCharacterDto } from './dto/update-character.dto';
 
-import { CharacterQueryDto } from './dto/character-query.dto';
 import { PaginationMeta } from 'src/common/interfaces/pagination-meta.interface';
-import { PaginationResponse } from 'src/common/dto/pagination-response.dto';
+import { CharacterQueryDto } from './dto/character-query.dto';
+import { ApiSuccessResponseWithPagination } from 'src/common/interfaces/api-response.interface';
 
 const SORT_COLUMN_MAP = {
   name: characters.name,
@@ -34,28 +39,21 @@ export class CharactersService {
   constructor(@Inject(DATABASE_CONNECTION) private readonly db: Database) {}
 
   async create(dto: CreateCharacterDto): Promise<CharacterDetailDto> {
+    if (dto.debutSeasonId != null) {
+      await this.assertDebutSeasonExists(dto.debutSeasonId);
+    }
+
     const [character] = await this.db
       .insert(characters)
       .values(dto)
       .returning();
-    return {
-      id: character.id,
-      name: character.name,
-      aliases: character.aliases,
-      species: character.species,
-      status: character.status,
-      createdAt: character.createdAt,
-      updatedAt: character.updatedAt,
-      debutSeasonId: character.debutSeasonId,
-      elements: [],
-      weapons: [],
-      seasons: [],
-    };
+
+    return this.findOne(character.id);
   }
 
   async findAll(
     query: CharacterQueryDto,
-  ): Promise<PaginationResponse<CharacterListItemDto>> {
+  ): Promise<ApiSuccessResponseWithPagination<CharacterListItemDto[]>> {
     const {
       page = 1,
       limit = 20,
@@ -133,7 +131,18 @@ export class CharactersService {
       totalPages: Math.ceil(total / limit),
     };
 
-    return { data: rows, meta };
+    return {
+      data: rows.map((row) => ({
+        id: row.id,
+        name: row.name,
+        aliases: row.aliases,
+        species: row.species,
+        status: row.status,
+        createdAt: row.createdAt,
+        updatedAt: row.updatedAt,
+      })),
+      meta,
+    };
   }
 
   async findOne(id: number): Promise<CharacterDetailDto> {
@@ -196,6 +205,10 @@ export class CharactersService {
     id: number,
     dto: UpdateCharacterDto,
   ): Promise<CharacterDetailDto> {
+    if (dto.debutSeasonId != null) {
+      await this.assertDebutSeasonExists(dto.debutSeasonId);
+    }
+
     const [updated] = await this.db
       .update(characters)
       .set(dto)
@@ -205,19 +218,8 @@ export class CharactersService {
     if (!updated) {
       throw new NotFoundException(`Character with id ${id} not found`);
     }
-    return {
-      id: updated.id,
-      name: updated.name,
-      aliases: updated.aliases,
-      species: updated.species,
-      status: updated.status,
-      debutSeasonId: updated.debutSeasonId,
-      createdAt: updated.createdAt,
-      updatedAt: updated.updatedAt,
-      elements: [],
-      weapons: [],
-      seasons: [],
-    };
+
+    return this.findOne(id);
   }
 
   async remove(id: number): Promise<void> {
@@ -227,6 +229,20 @@ export class CharactersService {
       .returning();
     if (!deleted) {
       throw new NotFoundException(`Character with id ${id} not found`);
+    }
+  }
+
+  private async assertDebutSeasonExists(debutSeasonId: number): Promise<void> {
+    const [season] = await this.db
+      .select({ id: seasons.id })
+      .from(seasons)
+      .where(eq(seasons.id, debutSeasonId))
+      .limit(1);
+
+    if (!season) {
+      throw new BadRequestException(
+        `Season with id ${debutSeasonId} not found`,
+      );
     }
   }
 }
