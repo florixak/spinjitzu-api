@@ -15,6 +15,13 @@
       "when": 1782911615061,
       "tag": "0001_concerned_karma",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1782996558370,
+      "tag": "0002_aspiring_silvermane",
+      "breakpoints": true
     }
   ]
 }

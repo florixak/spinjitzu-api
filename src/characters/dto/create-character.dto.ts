@@ -9,6 +9,10 @@ export class CreateCharacterDto {
   @IsString()
   name: string;
 
+  @ApiProperty({ example: 'The Fire Ninja' })
+  @IsString()
+  description: string;
+
   @ApiPropertyOptional({ type: [String], example: ['The Fire Ninja'] })
   @IsOptional()
   @IsArray()
