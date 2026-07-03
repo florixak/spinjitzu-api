@@ -1,4 +1,5 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
+import { Type } from 'class-transformer';
 import {
   IsEnum,
   IsIn,
@@ -22,6 +23,7 @@ export class SeasonQueryDto extends PaginationQueryDto {
   title?: string;
 
   @ApiPropertyOptional({
+    enum: SeasonType,
     description: 'Season type',
   })
   @IsOptional()
@@ -32,6 +34,7 @@ export class SeasonQueryDto extends PaginationQueryDto {
     description: 'Season number',
   })
   @IsOptional()
+  @Type(() => Number)
   @IsInt()
   @Min(0)
   number?: number;
@@ -40,6 +43,7 @@ export class SeasonQueryDto extends PaginationQueryDto {
     description: 'Season release year',
   })
   @IsOptional()
+  @Type(() => Number)
   @IsInt()
   @Min(1900)
   @Max(2100)
