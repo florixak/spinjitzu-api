@@ -8,6 +8,7 @@ import { AppConfigModule } from './config/config.module';
 import { validate } from './config/env.validation';
 import { DatabaseModule } from './database/database.module';
 import { RealmsModule } from './realms/realms.module';
+import { SeasonsModule } from './seasons/seasons.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { RealmsModule } from './realms/realms.module';
     AuthModule,
     CharactersModule,
     RealmsModule,
+    SeasonsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
