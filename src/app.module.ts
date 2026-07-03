@@ -9,6 +9,7 @@ import { validate } from './config/env.validation';
 import { DatabaseModule } from './database/database.module';
 import { RealmsModule } from './realms/realms.module';
 import { SeasonsModule } from './seasons/seasons.module';
+import { ElementsModule } from './elements/elements.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { SeasonsModule } from './seasons/seasons.module';
     CharactersModule,
     RealmsModule,
     SeasonsModule,
+    ElementsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
