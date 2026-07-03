@@ -2,6 +2,7 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import {
   IsEnum,
   IsInt,
+  IsNotEmpty,
   IsOptional,
   IsString,
   Max,
@@ -19,20 +20,22 @@ export class CreateSeasonDto {
   @Min(0)
   @Max(10)
   @IsOptional()
-  number: number;
+  number?: number;
 
   @ApiProperty({
     example: 'Rise of the Snakes',
     description: 'The season title',
   })
+  @IsNotEmpty()
   @IsString()
   @MaxLength(255)
   title: string;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     enum: SeasonType,
     example: SeasonType.STANDARD,
     description: 'The season type',
+    default: SeasonType.STANDARD,
   })
   @IsOptional()
   @IsEnum(SeasonType)
@@ -54,7 +57,7 @@ export class CreateSeasonDto {
   @Min(1900)
   @Max(2100)
   @IsOptional()
-  releaseYear: number;
+  releaseYear?: number;
 
   @ApiPropertyOptional({
     example: 'Pythor P. Chumsworth',
@@ -63,5 +66,5 @@ export class CreateSeasonDto {
   @IsString()
   @MaxLength(255)
   @IsOptional()
-  mainAntagonist: string;
+  mainAntagonist?: string;
 }
