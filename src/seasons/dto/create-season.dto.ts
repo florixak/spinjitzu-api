@@ -18,7 +18,6 @@ export class CreateSeasonDto {
   })
   @IsInt()
   @Min(0)
-  @Max(10)
   @IsOptional()
   number?: number;
 
@@ -30,6 +29,15 @@ export class CreateSeasonDto {
   @IsString()
   @MaxLength(255)
   title: string;
+
+  @ApiProperty({
+    example: 'The season description',
+    description: 'The season description',
+  })
+  @IsNotEmpty()
+  @IsString()
+  @MaxLength(1000)
+  description: string;
 
   @ApiPropertyOptional({
     enum: SeasonType,
