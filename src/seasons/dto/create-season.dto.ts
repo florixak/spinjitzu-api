@@ -50,7 +50,7 @@ export class CreateSeasonDto {
   episodesCount: number;
 
   @ApiPropertyOptional({
-    example: 2011,
+    example: 2012,
     description: 'The year the season was released',
   })
   @IsInt()
