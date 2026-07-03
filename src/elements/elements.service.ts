@@ -91,6 +91,7 @@ export class ElementsService {
       data: rows.map((row) => ({
         id: row.id,
         name: row.name,
+        description: row.description,
       })),
       meta,
     };

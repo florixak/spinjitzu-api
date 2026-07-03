@@ -3,6 +3,13 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 export class ElementListItemDto {
   @ApiProperty() id: number;
   @ApiProperty() name: string;
+  @ApiPropertyOptional({
+    type: String,
+    nullable: true,
+    description: 'The description of the element',
+    example: 'The elemental power of fire...',
+  })
+  description: string | null;
 }
 
 export class ElementMasterListItemDto {
@@ -17,12 +24,6 @@ export class ElementMasterListItemDto {
 export class ElementDetailDto extends ElementListItemDto {
   @ApiProperty() createdAt: Date;
   @ApiProperty() updatedAt: Date;
-  @ApiPropertyOptional({
-    type: String,
-    nullable: true,
-    example: 'The elemental power of fire...',
-  })
-  description: string | null;
   @ApiProperty({
     type: [ElementMasterListItemDto],
     description:
