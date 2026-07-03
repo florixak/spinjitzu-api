@@ -10,6 +10,7 @@ import { DatabaseModule } from './database/database.module';
 import { RealmsModule } from './realms/realms.module';
 import { SeasonsModule } from './seasons/seasons.module';
 import { ElementsModule } from './elements/elements.module';
+import { LocationsModule } from './locations/locations.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { ElementsModule } from './elements/elements.module';
     RealmsModule,
     SeasonsModule,
     ElementsModule,
+    LocationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
