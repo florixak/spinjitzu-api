@@ -3,6 +3,7 @@ import { ApiProperty } from '@nestjs/swagger';
 export class CharacterListItemDto {
   @ApiProperty() id: number;
   @ApiProperty() name: string;
+  @ApiProperty() description: string;
   @ApiProperty({ type: [String], nullable: true }) aliases: string[] | null;
   @ApiProperty({ nullable: true }) species: string | null;
   @ApiProperty({ nullable: true }) status: string | null;

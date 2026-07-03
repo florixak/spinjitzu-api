@@ -1,0 +1,97 @@
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiBody,
+  ApiNoContentResponse,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Role } from 'src/auth/enums/role.enum';
+import { RealmsService } from './realms.service';
+import { CreateRealmDto } from './dto/create-realm.dto';
+import { UpdateRealmDto } from './dto/update-realm.dto';
+import { RealmQueryDto } from './dto/realm-query.dto';
+import { RealmDetailDto } from './dto/realm-response.dto';
+
+@ApiTags('Realms')
+@Controller('realms')
+export class RealmsController {
+  constructor(private readonly realmsService: RealmsService) {}
+
+  @Get()
+  @ApiOperation({ summary: 'Get all realms' })
+  @ApiQuery({ type: RealmQueryDto })
+  @ApiResponse({ status: 200, description: 'Realms fetched successfully' })
+  findAll(@Query() query: RealmQueryDto) {
+    return this.realmsService.findAll(query);
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get a realm by id' })
+  @ApiResponse({
+    status: 200,
+    description: 'Realm fetched successfully',
+    type: RealmDetailDto,
+  })
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<RealmDetailDto> {
+    return this.realmsService.findOne(id);
+  }
+
+  @Post()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: 'Create a new realm' })
+  @ApiBody({ type: CreateRealmDto, description: 'Realm data' })
+  @ApiResponse({
+    status: 201,
+    description: 'Realm created successfully',
+    type: RealmDetailDto,
+  })
+  create(@Body() createRealmDto: CreateRealmDto): Promise<RealmDetailDto> {
+    return this.realmsService.create(createRealmDto);
+  }
+
+  @Patch(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: 'Update a realm by id' })
+  @ApiBody({ type: UpdateRealmDto, description: 'Realm data' })
+  @ApiResponse({
+    status: 200,
+    description: 'Realm updated successfully',
+    type: RealmDetailDto,
+  })
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateRealmDto: UpdateRealmDto,
+  ): Promise<RealmDetailDto> {
+    return this.realmsService.update(id, updateRealmDto);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: 'Delete a realm by id' })
+  @ApiNoContentResponse({ description: 'Realm deleted successfully' })
+  remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.realmsService.remove(id);
+  }
+}

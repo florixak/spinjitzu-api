@@ -135,6 +135,7 @@ export class CharactersService {
       data: rows.map((row) => ({
         id: row.id,
         name: row.name,
+        description: row.description,
         aliases: row.aliases,
         species: row.species,
         status: row.status,
@@ -189,6 +190,7 @@ export class CharactersService {
     return {
       id: character.id,
       name: character.name,
+      description: character.description,
       aliases: character.aliases,
       species: character.species,
       status: character.status,
@@ -205,6 +207,10 @@ export class CharactersService {
     id: number,
     dto: UpdateCharacterDto,
   ): Promise<CharacterDetailDto> {
+    if (Object.keys(dto).length === 0) {
+      throw new BadRequestException('At least one field must be provided');
+    }
+
     if (dto.debutSeasonId != null) {
       await this.assertDebutSeasonExists(dto.debutSeasonId);
     }

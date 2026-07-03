@@ -7,6 +7,7 @@ export const characters = pgTable(
   {
     id: idColumn(),
     name: varchar('name', { length: 255 }).notNull(),
+    description: text('description').notNull(),
     aliases: text('aliases').array(),
     species: varchar('species', { length: 100 }).default('Human'),
     status: varchar('status', { length: 50 }).default('Alive'),
