@@ -28,6 +28,9 @@ export class SeasonLocationDto {
 }
 
 export class SeasonDetailDto extends SeasonListItemDto {
+  @ApiProperty() createdAt: Date;
+  @ApiProperty() updatedAt: Date;
+
   @ApiProperty({ type: [SeasonCharacterDto] })
   characters: SeasonCharacterDto[];
 
@@ -36,7 +39,4 @@ export class SeasonDetailDto extends SeasonListItemDto {
 
   @ApiProperty({ type: [SeasonLocationDto] })
   locations: SeasonLocationDto[];
-
-  @ApiProperty() createdAt: Date;
-  @ApiProperty() updatedAt: Date;
 }
