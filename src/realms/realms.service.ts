@@ -28,18 +28,22 @@ export class RealmsService {
   async create(createRealmDto: CreateRealmDto): Promise<RealmDetailDto> {
     await this.assertNameAvailable(createRealmDto.name);
 
-    const [realm] = await this.db
-      .insert(realms)
-      .values(createRealmDto)
-      .returning();
+    try {
+      const [realm] = await this.db
+        .insert(realms)
+        .values(createRealmDto)
+        .returning();
 
-    return {
-      id: realm.id,
-      name: realm.name,
-      description: realm.description,
-      createdAt: realm.createdAt,
-      updatedAt: realm.updatedAt,
-    };
+      return {
+        id: realm.id,
+        name: realm.name,
+        description: realm.description,
+        createdAt: realm.createdAt,
+        updatedAt: realm.updatedAt,
+      };
+    } catch (error) {
+      this.rethrowIfUniqueNameViolation(error, createRealmDto.name);
+    }
   }
 
   async findAll(
@@ -126,23 +130,30 @@ export class RealmsService {
       await this.assertNameAvailable(updateRealmDto.name, id);
     }
 
-    const [realm] = await this.db
-      .update(realms)
-      .set(updateRealmDto)
-      .where(eq(realms.id, id))
-      .returning();
+    try {
+      const [realm] = await this.db
+        .update(realms)
+        .set(updateRealmDto)
+        .where(eq(realms.id, id))
+        .returning();
 
-    if (!realm) {
-      throw new NotFoundException(`Realm with id ${id} not found`);
+      if (!realm) {
+        throw new NotFoundException(`Realm with id ${id} not found`);
+      }
+
+      return {
+        id: realm.id,
+        name: realm.name,
+        description: realm.description,
+        createdAt: realm.createdAt,
+        updatedAt: realm.updatedAt,
+      };
+    } catch (error) {
+      if (updateRealmDto.name !== undefined) {
+        this.rethrowIfUniqueNameViolation(error, updateRealmDto.name);
+      }
+      throw error;
     }
-
-    return {
-      id: realm.id,
-      name: realm.name,
-      description: realm.description,
-      createdAt: realm.createdAt,
-      updatedAt: realm.updatedAt,
-    };
   }
 
   async remove(id: number): Promise<void> {
@@ -174,5 +185,21 @@ export class RealmsService {
     if (existing) {
       throw new ConflictException(`Realm with name '${name}' already exists`);
     }
+  }
+
+  private rethrowIfUniqueNameViolation(error: unknown, name: string): never {
+    if (this.isUniqueNameViolation(error)) {
+      throw new ConflictException(`Realm with name '${name}' already exists`);
+    }
+    throw error;
+  }
+
+  private isUniqueNameViolation(error: unknown): boolean {
+    if (typeof error !== 'object' || error === null) {
+      return false;
+    }
+
+    const { code, cause } = error as { code?: string; cause?: unknown };
+    return code === '23505' || this.isUniqueNameViolation(cause);
   }
 }
