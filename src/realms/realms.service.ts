@@ -8,6 +8,7 @@ import {
 import { and, asc, count, desc, eq, ilike, ne, SQL } from 'drizzle-orm';
 import { ApiSuccessResponseWithPagination } from 'src/common/interfaces/api-response.interface';
 import { PaginationMeta } from 'src/common/interfaces/pagination-meta.interface';
+import { rethrowIfUniqueViolation } from 'src/common/utils/postgres-unique-violation.util';
 import type { Database } from 'src/database/database-connection';
 import { DATABASE_CONNECTION } from 'src/database/database.module';
 import { realms } from 'src/database/schema';
@@ -42,7 +43,10 @@ export class RealmsService {
         updatedAt: realm.updatedAt,
       };
     } catch (error) {
-      this.rethrowIfUniqueNameViolation(error, createRealmDto.name);
+      rethrowIfUniqueViolation(
+        error,
+        `Realm with name '${createRealmDto.name}' already exists`,
+      );
     }
   }
 
@@ -150,7 +154,10 @@ export class RealmsService {
       };
     } catch (error) {
       if (updateRealmDto.name !== undefined) {
-        this.rethrowIfUniqueNameViolation(error, updateRealmDto.name);
+        rethrowIfUniqueViolation(
+          error,
+          `Realm with name '${updateRealmDto.name}' already exists`,
+        );
       }
       throw error;
     }
@@ -185,21 +192,5 @@ export class RealmsService {
     if (existing) {
       throw new ConflictException(`Realm with name '${name}' already exists`);
     }
-  }
-
-  private rethrowIfUniqueNameViolation(error: unknown, name: string): never {
-    if (this.isUniqueNameViolation(error)) {
-      throw new ConflictException(`Realm with name '${name}' already exists`);
-    }
-    throw error;
-  }
-
-  private isUniqueNameViolation(error: unknown): boolean {
-    if (typeof error !== 'object' || error === null) {
-      return false;
-    }
-
-    const { code, cause } = error as { code?: string; cause?: unknown };
-    return code === '23505' || this.isUniqueNameViolation(cause);
   }
 }
