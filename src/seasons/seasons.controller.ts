@@ -10,7 +10,6 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -20,10 +19,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Role } from 'src/auth/enums/role.enum';
+import { AdminWrite } from 'src/common/decorators/admin-write.decorator.ts';
 import { CreateSeasonDto } from './dto/create-season.dto';
 import { SeasonQueryDto } from './dto/season-query.dto';
 import { SeasonDetailDto } from './dto/season-response.dto';
@@ -44,8 +40,7 @@ export class SeasonsController {
   }
 
   @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @AdminWrite()
   @ApiOperation({ summary: 'Create a new season' })
   @ApiBody({ type: CreateSeasonDto, description: 'Season data' })
   @ApiResponse({
@@ -69,8 +64,7 @@ export class SeasonsController {
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @AdminWrite()
   @ApiOperation({ summary: 'Update a season by id' })
   @ApiBody({ type: UpdateSeasonDto, description: 'Season data' })
   @ApiResponse({
@@ -87,8 +81,7 @@ export class SeasonsController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @AdminWrite()
   @ApiOperation({ summary: 'Delete a season by id' })
   @ApiNoContentResponse({ description: 'Season deleted successfully' })
   remove(@Param('id', ParseIntPipe) id: number): Promise<void> {

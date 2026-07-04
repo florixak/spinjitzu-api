@@ -10,7 +10,6 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -20,15 +19,12 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Role } from 'src/auth/enums/role.enum';
-import { RealmsService } from './realms.service';
+import { AdminWrite } from 'src/common/decorators/admin-write.decorator.ts';
 import { CreateRealmDto } from './dto/create-realm.dto';
-import { UpdateRealmDto } from './dto/update-realm.dto';
 import { RealmQueryDto } from './dto/realm-query.dto';
 import { RealmDetailDto } from './dto/realm-response.dto';
+import { UpdateRealmDto } from './dto/update-realm.dto';
+import { RealmsService } from './realms.service';
 
 @ApiTags('Realms')
 @Controller('realms')
@@ -55,8 +51,7 @@ export class RealmsController {
   }
 
   @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @AdminWrite()
   @ApiOperation({ summary: 'Create a new realm' })
   @ApiBody({ type: CreateRealmDto, description: 'Realm data' })
   @ApiResponse({
@@ -69,8 +64,7 @@ export class RealmsController {
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @AdminWrite()
   @ApiOperation({ summary: 'Update a realm by id' })
   @ApiBody({ type: UpdateRealmDto, description: 'Realm data' })
   @ApiResponse({
@@ -87,8 +81,7 @@ export class RealmsController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @AdminWrite()
   @ApiOperation({ summary: 'Delete a realm by id' })
   @ApiNoContentResponse({ description: 'Realm deleted successfully' })
   remove(@Param('id', ParseIntPipe) id: number): Promise<void> {

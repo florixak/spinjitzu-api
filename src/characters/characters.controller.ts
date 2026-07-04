@@ -10,7 +10,6 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -20,15 +19,12 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Role } from 'src/auth/enums/role.enum';
+import { AdminWrite } from 'src/common/decorators/admin-write.decorator.ts';
 import { CharactersService } from './characters.service';
-import { CreateCharacterDto } from './dto/create-character.dto';
-import { UpdateCharacterDto } from './dto/update-character.dto';
 import { CharacterQueryDto } from './dto/character-query.dto';
 import { CharacterDetailDto } from './dto/character-response.dto';
+import { CreateCharacterDto } from './dto/create-character.dto';
+import { UpdateCharacterDto } from './dto/update-character.dto';
 
 @ApiTags('Characters')
 @Controller('characters')
@@ -55,8 +51,7 @@ export class CharactersController {
   }
 
   @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @AdminWrite()
   @ApiOperation({ summary: 'Create a new character' })
   @ApiBody({ type: CreateCharacterDto, description: 'Character data' })
   @ApiResponse({
@@ -69,8 +64,7 @@ export class CharactersController {
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @AdminWrite()
   @ApiOperation({ summary: 'Update a character by id' })
   @ApiBody({ type: UpdateCharacterDto, description: 'Character data' })
   @ApiResponse({
@@ -87,8 +81,7 @@ export class CharactersController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @AdminWrite()
   @ApiOperation({ summary: 'Delete a character by id' })
   @ApiNoContentResponse({ description: 'Character deleted successfully' })
   remove(@Param('id', ParseIntPipe) id: number) {

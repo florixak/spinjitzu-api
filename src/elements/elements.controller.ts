@@ -10,7 +10,6 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -20,10 +19,7 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Role } from 'src/auth/enums/role.enum';
+import { AdminWrite } from 'src/common/decorators/admin-write.decorator.ts';
 import { CreateElementDto } from './dto/create-element.dto';
 import { ElementQueryDto } from './dto/element-query.dto';
 import { ElementDetailDto } from './dto/element-response.dto';
@@ -55,8 +51,7 @@ export class ElementsController {
   }
 
   @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @AdminWrite()
   @ApiOperation({ summary: 'Create a new element' })
   @ApiBody({ type: CreateElementDto, description: 'Element data' })
   @ApiResponse({
@@ -71,8 +66,7 @@ export class ElementsController {
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @AdminWrite()
   @ApiOperation({ summary: 'Update an element by id' })
   @ApiBody({ type: UpdateElementDto, description: 'Element data' })
   @ApiResponse({
@@ -89,8 +83,7 @@ export class ElementsController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @AdminWrite()
   @ApiOperation({ summary: 'Delete an element by id' })
   @ApiNoContentResponse({ description: 'Element deleted successfully' })
   remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
