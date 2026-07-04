@@ -10,7 +10,6 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -20,10 +19,8 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Role } from 'src/auth/enums/role.enum';
+import { AdminWrite } from 'src/common/decorators/admin-write.decorator';
+import { PublicRead } from 'src/common/decorators/public-read.decorator';
 import { CreateWeaponDto } from './dto/create-weapon.dto';
 import { UpdateWeaponDto } from './dto/update-weapon.dto';
 import { WeaponQueryDto } from './dto/weapon-query.dto';
@@ -36,6 +33,7 @@ export class WeaponsController {
   constructor(private readonly weaponsService: WeaponsService) {}
 
   @Get()
+  @PublicRead()
   @ApiOperation({ summary: 'Get all weapons' })
   @ApiQuery({ type: WeaponQueryDto })
   @ApiResponse({ status: 200, description: 'Weapons fetched successfully' })
@@ -44,6 +42,7 @@ export class WeaponsController {
   }
 
   @Get(':id')
+  @PublicRead()
   @ApiOperation({ summary: 'Get a weapon by id' })
   @ApiResponse({
     status: 200,
@@ -55,8 +54,7 @@ export class WeaponsController {
   }
 
   @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @AdminWrite()
   @ApiOperation({ summary: 'Create a new weapon' })
   @ApiBody({ type: CreateWeaponDto, description: 'Weapon data' })
   @ApiResponse({
@@ -69,8 +67,7 @@ export class WeaponsController {
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @AdminWrite()
   @ApiOperation({ summary: 'Update a weapon by id' })
   @ApiBody({ type: UpdateWeaponDto, description: 'Weapon data' })
   @ApiResponse({
@@ -87,8 +84,7 @@ export class WeaponsController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @AdminWrite()
   @ApiOperation({ summary: 'Delete a weapon by id' })
   @ApiNoContentResponse({ description: 'Weapon deleted successfully' })
   remove(@Param('id', ParseIntPipe) id: number): Promise<void> {

@@ -10,7 +10,6 @@ import {
   Patch,
   Post,
   Query,
-  UseGuards,
 } from '@nestjs/common';
 import {
   ApiBody,
@@ -20,10 +19,8 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { RolesGuard } from 'src/auth/guards/roles.guard';
-import { Roles } from 'src/auth/decorators/roles.decorator';
-import { Role } from 'src/auth/enums/role.enum';
+import { AdminWrite } from 'src/common/decorators/admin-write.decorator';
+import { PublicRead } from 'src/common/decorators/public-read.decorator';
 import { CreateLocationDto } from './dto/create-location.dto';
 import { LocationQueryDto } from './dto/location-query.dto';
 import { LocationDetailDto } from './dto/location-response.dto';
@@ -36,6 +33,7 @@ export class LocationsController {
   constructor(private readonly locationsService: LocationsService) {}
 
   @Get()
+  @PublicRead()
   @ApiOperation({ summary: 'Get all locations' })
   @ApiQuery({ type: LocationQueryDto })
   @ApiResponse({ status: 200, description: 'Locations fetched successfully' })
@@ -44,6 +42,7 @@ export class LocationsController {
   }
 
   @Get(':id')
+  @PublicRead()
   @ApiOperation({ summary: 'Get a location by id' })
   @ApiResponse({
     status: 200,
@@ -55,8 +54,7 @@ export class LocationsController {
   }
 
   @Post()
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @AdminWrite()
   @ApiOperation({ summary: 'Create a new location' })
   @ApiBody({ type: CreateLocationDto, description: 'Location data' })
   @ApiResponse({
@@ -71,8 +69,7 @@ export class LocationsController {
   }
 
   @Patch(':id')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @AdminWrite()
   @ApiOperation({ summary: 'Update a location by id' })
   @ApiBody({ type: UpdateLocationDto, description: 'Location data' })
   @ApiResponse({
@@ -89,8 +86,7 @@ export class LocationsController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(Role.ADMIN)
+  @AdminWrite()
   @ApiOperation({ summary: 'Delete a location by id' })
   @ApiNoContentResponse({ description: 'Location deleted successfully' })
   remove(@Param('id', ParseIntPipe) id: number): Promise<void> {

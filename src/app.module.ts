@@ -12,6 +12,8 @@ import { SeasonsModule } from './seasons/seasons.module';
 import { ElementsModule } from './elements/elements.module';
 import { LocationsModule } from './locations/locations.module';
 import { WeaponsModule } from './weapons/weapons.module';
+import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -19,6 +21,20 @@ import { WeaponsModule } from './weapons/weapons.module';
       isGlobal: true,
       validate,
       envFilePath: '.env',
+    }),
+    ThrottlerModule.forRoot({
+      throttlers: [
+        { name: 'read', ttl: 60_000, limit: 200 },
+        { name: 'write', ttl: 60_000, limit: 20 },
+        { name: 'auth', ttl: 60_000, limit: 5 },
+      ],
+      skipIf: (context) => {
+        const request = context.switchToHttp().getRequest<{ url?: string }>();
+        return (
+          request.url === '/docs' ||
+          (request.url?.startsWith('/docs/') ?? false)
+        );
+      },
     }),
     AppConfigModule,
     DatabaseModule,
@@ -31,6 +47,12 @@ import { WeaponsModule } from './weapons/weapons.module';
     WeaponsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
 export class AppModule {}
