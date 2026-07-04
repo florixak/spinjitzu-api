@@ -19,7 +19,8 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AdminWrite } from 'src/common/decorators/admin-write.decorator.ts';
+import { AdminWrite } from 'src/common/decorators/admin-write.decorator';
+import { PublicRead } from 'src/common/decorators/public-read.decorator';
 import { CreateLocationDto } from './dto/create-location.dto';
 import { LocationQueryDto } from './dto/location-query.dto';
 import { LocationDetailDto } from './dto/location-response.dto';
@@ -32,6 +33,7 @@ export class LocationsController {
   constructor(private readonly locationsService: LocationsService) {}
 
   @Get()
+  @PublicRead()
   @ApiOperation({ summary: 'Get all locations' })
   @ApiQuery({ type: LocationQueryDto })
   @ApiResponse({ status: 200, description: 'Locations fetched successfully' })
@@ -40,6 +42,7 @@ export class LocationsController {
   }
 
   @Get(':id')
+  @PublicRead()
   @ApiOperation({ summary: 'Get a location by id' })
   @ApiResponse({
     status: 200,

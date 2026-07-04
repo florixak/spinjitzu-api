@@ -19,7 +19,8 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AdminWrite } from 'src/common/decorators/admin-write.decorator.ts';
+import { AdminWrite } from 'src/common/decorators/admin-write.decorator';
+import { PublicRead } from 'src/common/decorators/public-read.decorator';
 import { CreateRealmDto } from './dto/create-realm.dto';
 import { RealmQueryDto } from './dto/realm-query.dto';
 import { RealmDetailDto } from './dto/realm-response.dto';
@@ -32,6 +33,7 @@ export class RealmsController {
   constructor(private readonly realmsService: RealmsService) {}
 
   @Get()
+  @PublicRead()
   @ApiOperation({ summary: 'Get all realms' })
   @ApiQuery({ type: RealmQueryDto })
   @ApiResponse({ status: 200, description: 'Realms fetched successfully' })
@@ -40,6 +42,7 @@ export class RealmsController {
   }
 
   @Get(':id')
+  @PublicRead()
   @ApiOperation({ summary: 'Get a realm by id' })
   @ApiResponse({
     status: 200,

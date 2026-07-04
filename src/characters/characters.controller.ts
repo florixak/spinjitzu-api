@@ -19,7 +19,8 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AdminWrite } from 'src/common/decorators/admin-write.decorator.ts';
+import { AdminWrite } from 'src/common/decorators/admin-write.decorator';
+import { PublicRead } from 'src/common/decorators/public-read.decorator';
 import { CharactersService } from './characters.service';
 import { CharacterQueryDto } from './dto/character-query.dto';
 import { CharacterDetailDto } from './dto/character-response.dto';
@@ -32,6 +33,7 @@ export class CharactersController {
   constructor(private readonly charactersService: CharactersService) {}
 
   @Get()
+  @PublicRead()
   @ApiOperation({ summary: 'Get all characters' })
   @ApiQuery({ type: CharacterQueryDto })
   @ApiResponse({ status: 200, description: 'Characters fetched successfully' })
@@ -40,6 +42,7 @@ export class CharactersController {
   }
 
   @Get(':id')
+  @PublicRead()
   @ApiOperation({ summary: 'Get a character by id' })
   @ApiResponse({
     status: 200,

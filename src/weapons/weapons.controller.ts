@@ -19,7 +19,8 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AdminWrite } from 'src/common/decorators/admin-write.decorator.ts';
+import { AdminWrite } from 'src/common/decorators/admin-write.decorator';
+import { PublicRead } from 'src/common/decorators/public-read.decorator';
 import { CreateWeaponDto } from './dto/create-weapon.dto';
 import { UpdateWeaponDto } from './dto/update-weapon.dto';
 import { WeaponQueryDto } from './dto/weapon-query.dto';
@@ -32,6 +33,7 @@ export class WeaponsController {
   constructor(private readonly weaponsService: WeaponsService) {}
 
   @Get()
+  @PublicRead()
   @ApiOperation({ summary: 'Get all weapons' })
   @ApiQuery({ type: WeaponQueryDto })
   @ApiResponse({ status: 200, description: 'Weapons fetched successfully' })
@@ -40,6 +42,7 @@ export class WeaponsController {
   }
 
   @Get(':id')
+  @PublicRead()
   @ApiOperation({ summary: 'Get a weapon by id' })
   @ApiResponse({
     status: 200,

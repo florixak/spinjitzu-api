@@ -19,7 +19,8 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AdminWrite } from 'src/common/decorators/admin-write.decorator.ts';
+import { AdminWrite } from 'src/common/decorators/admin-write.decorator';
+import { PublicRead } from 'src/common/decorators/public-read.decorator';
 import { CreateSeasonDto } from './dto/create-season.dto';
 import { SeasonQueryDto } from './dto/season-query.dto';
 import { SeasonDetailDto } from './dto/season-response.dto';
@@ -32,6 +33,7 @@ export class SeasonsController {
   constructor(private readonly seasonsService: SeasonsService) {}
 
   @Get()
+  @PublicRead()
   @ApiOperation({ summary: 'Get all seasons' })
   @ApiQuery({ type: SeasonQueryDto })
   @ApiResponse({ status: 200, description: 'Seasons fetched successfully' })
@@ -53,6 +55,7 @@ export class SeasonsController {
   }
 
   @Get(':id')
+  @PublicRead()
   @ApiOperation({ summary: 'Get a season by id' })
   @ApiResponse({
     status: 200,

@@ -19,7 +19,8 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AdminWrite } from 'src/common/decorators/admin-write.decorator.ts';
+import { AdminWrite } from 'src/common/decorators/admin-write.decorator';
+import { PublicRead } from 'src/common/decorators/public-read.decorator';
 import { CreateElementDto } from './dto/create-element.dto';
 import { ElementQueryDto } from './dto/element-query.dto';
 import { ElementDetailDto } from './dto/element-response.dto';
@@ -32,6 +33,7 @@ export class ElementsController {
   constructor(private readonly elementsService: ElementsService) {}
 
   @Get()
+  @PublicRead()
   @ApiOperation({ summary: 'Get all elements' })
   @ApiQuery({ type: ElementQueryDto })
   @ApiResponse({ status: 200, description: 'Elements fetched successfully' })
@@ -40,6 +42,7 @@ export class ElementsController {
   }
 
   @Get(':id')
+  @PublicRead()
   @ApiOperation({ summary: 'Get an element by id' })
   @ApiResponse({
     status: 200,
