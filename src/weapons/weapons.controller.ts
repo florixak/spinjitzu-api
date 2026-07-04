@@ -1,0 +1,97 @@
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpCode,
+  HttpStatus,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
+import {
+  ApiBody,
+  ApiNoContentResponse,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { Role } from 'src/auth/enums/role.enum';
+import { CreateWeaponDto } from './dto/create-weapon.dto';
+import { UpdateWeaponDto } from './dto/update-weapon.dto';
+import { WeaponQueryDto } from './dto/weapon-query.dto';
+import { WeaponDetailDto } from './dto/weapon-response.dto';
+import { WeaponsService } from './weapons.service';
+
+@ApiTags('Weapons')
+@Controller('weapons')
+export class WeaponsController {
+  constructor(private readonly weaponsService: WeaponsService) {}
+
+  @Get()
+  @ApiOperation({ summary: 'Get all weapons' })
+  @ApiQuery({ type: WeaponQueryDto })
+  @ApiResponse({ status: 200, description: 'Weapons fetched successfully' })
+  findAll(@Query() query: WeaponQueryDto) {
+    return this.weaponsService.findAll(query);
+  }
+
+  @Get(':id')
+  @ApiOperation({ summary: 'Get a weapon by id' })
+  @ApiResponse({
+    status: 200,
+    description: 'Weapon fetched successfully',
+    type: WeaponDetailDto,
+  })
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<WeaponDetailDto> {
+    return this.weaponsService.findOne(id);
+  }
+
+  @Post()
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: 'Create a new weapon' })
+  @ApiBody({ type: CreateWeaponDto, description: 'Weapon data' })
+  @ApiResponse({
+    status: 201,
+    description: 'Weapon created successfully',
+    type: WeaponDetailDto,
+  })
+  create(@Body() createWeaponDto: CreateWeaponDto): Promise<WeaponDetailDto> {
+    return this.weaponsService.create(createWeaponDto);
+  }
+
+  @Patch(':id')
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: 'Update a weapon by id' })
+  @ApiBody({ type: UpdateWeaponDto, description: 'Weapon data' })
+  @ApiResponse({
+    status: 200,
+    description: 'Weapon updated successfully',
+    type: WeaponDetailDto,
+  })
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateWeaponDto: UpdateWeaponDto,
+  ): Promise<WeaponDetailDto> {
+    return this.weaponsService.update(id, updateWeaponDto);
+  }
+
+  @Delete(':id')
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: 'Delete a weapon by id' })
+  @ApiNoContentResponse({ description: 'Weapon deleted successfully' })
+  remove(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.weaponsService.remove(id);
+  }
+}
