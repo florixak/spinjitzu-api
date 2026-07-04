@@ -7,6 +7,7 @@ import {
 import { and, asc, count, desc, eq, exists, ilike, SQL } from 'drizzle-orm';
 import { ApiSuccessResponseWithPagination } from 'src/common/interfaces/api-response.interface';
 import { PaginationMeta } from 'src/common/interfaces/pagination-meta.interface';
+import { rethrowIfForeignKeyViolation } from 'src/common/utils/postgres-foreign-key-violation.util';
 import type { Database } from 'src/database/database-connection';
 import { DATABASE_CONNECTION } from 'src/database/database.module';
 import {
@@ -32,12 +33,21 @@ export class LocationsService {
   constructor(@Inject(DATABASE_CONNECTION) private readonly db: Database) {}
 
   async create(dto: CreateLocationDto): Promise<LocationDetailDto> {
-    if (dto.realmId != null) {
-      await this.assertRealmExists(dto.realmId);
+    try {
+      const [location] = await this.db
+        .insert(locations)
+        .values(dto)
+        .returning();
+      return this.findOne(location.id);
+    } catch (error) {
+      if (dto.realmId != null) {
+        rethrowIfForeignKeyViolation(
+          error,
+          `Realm with id ${dto.realmId} not found`,
+        );
+      }
+      throw error;
     }
-
-    const [location] = await this.db.insert(locations).values(dto).returning();
-    return this.findOne(location.id);
   }
 
   async findAll(
@@ -161,21 +171,27 @@ export class LocationsService {
       throw new BadRequestException('At least one field must be provided');
     }
 
-    if (dto.realmId != null) {
-      await this.assertRealmExists(dto.realmId);
+    try {
+      const [location] = await this.db
+        .update(locations)
+        .set(dto)
+        .where(eq(locations.id, id))
+        .returning();
+
+      if (!location) {
+        throw new NotFoundException(`Location with id ${id} not found`);
+      }
+
+      return this.findOne(id);
+    } catch (error) {
+      if (dto.realmId != null) {
+        rethrowIfForeignKeyViolation(
+          error,
+          `Realm with id ${dto.realmId} not found`,
+        );
+      }
+      throw error;
     }
-
-    const [location] = await this.db
-      .update(locations)
-      .set(dto)
-      .where(eq(locations.id, id))
-      .returning();
-
-    if (!location) {
-      throw new NotFoundException(`Location with id ${id} not found`);
-    }
-
-    return this.findOne(id);
   }
 
   async remove(id: number): Promise<void> {
@@ -186,18 +202,6 @@ export class LocationsService {
 
     if (!deleted) {
       throw new NotFoundException(`Location with id ${id} not found`);
-    }
-  }
-
-  private async assertRealmExists(realmId: number): Promise<void> {
-    const [realm] = await this.db
-      .select({ id: realms.id })
-      .from(realms)
-      .where(eq(realms.id, realmId))
-      .limit(1);
-
-    if (!realm) {
-      throw new BadRequestException(`Realm with id ${realmId} not found`);
     }
   }
 }
