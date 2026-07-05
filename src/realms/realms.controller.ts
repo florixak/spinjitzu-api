@@ -19,8 +19,8 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AdminWrite } from 'src/common/decorators/admin-write.decorator';
-import { PublicRead } from 'src/common/decorators/public-read.decorator';
+import { AdminWrite } from '../common/decorators/admin-write.decorator';
+import { PublicRead } from '../common/decorators/public-read.decorator';
 import { CreateRealmDto } from './dto/create-realm.dto';
 import { RealmQueryDto } from './dto/realm-query.dto';
 import { RealmDetailDto } from './dto/realm-response.dto';

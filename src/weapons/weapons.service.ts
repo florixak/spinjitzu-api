@@ -5,11 +5,11 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { and, asc, count, desc, eq, ilike, SQL } from 'drizzle-orm';
-import { ApiSuccessResponseWithPagination } from 'src/common/interfaces/api-response.interface';
-import { PaginationMeta } from 'src/common/interfaces/pagination-meta.interface';
-import type { Database } from 'src/database/database-connection';
-import { DATABASE_CONNECTION } from 'src/database/database.module';
-import { characters, charactersToWeapons, weapons } from 'src/database/schema';
+import { ApiSuccessResponseWithPagination } from '../common/interfaces/api-response.interface';
+import { PaginationMeta } from '../common/interfaces/pagination-meta.interface';
+import type { Database } from '../database/database-connection';
+import { DATABASE_CONNECTION } from '../database/database.module';
+import { characters, charactersToWeapons, weapons } from '../database/schema';
 import { CreateWeaponDto } from './dto/create-weapon.dto';
 import { UpdateWeaponDto } from './dto/update-weapon.dto';
 import { WeaponQueryDto } from './dto/weapon-query.dto';

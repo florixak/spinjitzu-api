@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { and, asc, count, desc, eq, ilike, SQL } from 'drizzle-orm';
-import type { Database } from 'src/database/database-connection';
+import type { Database } from '../database/database-connection';
 import {
   characters,
   charactersToSeasons,
@@ -14,15 +14,15 @@ import {
   seasons,
   weapons,
   weaponsToSeasons,
-} from 'src/database/schema';
+} from '../database/schema';
 import { CreateSeasonDto } from './dto/create-season.dto';
 import { SeasonQueryDto } from './dto/season-query.dto';
 import { SeasonDetailDto, SeasonListItemDto } from './dto/season-response.dto';
 import { UpdateSeasonDto } from './dto/update-season.dto';
 import { SeasonType } from './enums/season-type.enum';
-import { DATABASE_CONNECTION } from 'src/database/database.module';
-import { ApiSuccessResponseWithPagination } from 'src/common/interfaces/api-response.interface';
-import { PaginationMeta } from 'src/common/interfaces/pagination-meta.interface';
+import { DATABASE_CONNECTION } from '../database/database.module';
+import { ApiSuccessResponseWithPagination } from '../common/interfaces/api-response.interface';
+import { PaginationMeta } from '../common/interfaces/pagination-meta.interface';
 
 const SORT_COLUMN_MAP = {
   title: seasons.title,

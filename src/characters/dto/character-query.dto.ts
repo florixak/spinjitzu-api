@@ -8,7 +8,7 @@ import {
   IsString,
   Min,
 } from 'class-validator';
-import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
+import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import { CharacterStatus } from '../enums/character-status.enum';
 
 const SORTABLE_FIELDS = ['name', 'status', 'species', 'createdAt'] as const;

@@ -19,8 +19,8 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AdminWrite } from 'src/common/decorators/admin-write.decorator';
-import { PublicRead } from 'src/common/decorators/public-read.decorator';
+import { AdminWrite } from '../common/decorators/admin-write.decorator';
+import { PublicRead } from '../common/decorators/public-read.decorator';
 import { CreateLocationDto } from './dto/create-location.dto';
 import { LocationQueryDto } from './dto/location-query.dto';
 import { LocationDetailDto } from './dto/location-response.dto';
