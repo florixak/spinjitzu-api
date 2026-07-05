@@ -6,16 +6,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { and, asc, count, desc, eq, ilike, ne, SQL } from 'drizzle-orm';
-import { ApiSuccessResponseWithPagination } from 'src/common/interfaces/api-response.interface';
-import { PaginationMeta } from 'src/common/interfaces/pagination-meta.interface';
-import { rethrowIfUniqueViolation } from 'src/common/utils/postgres-unique-violation.util';
-import type { Database } from 'src/database/database-connection';
-import { DATABASE_CONNECTION } from 'src/database/database.module';
-import {
-  characters,
-  charactersToElements,
-  elements,
-} from 'src/database/schema';
+import { ApiSuccessResponseWithPagination } from '../common/interfaces/api-response.interface';
+import { PaginationMeta } from '../common/interfaces/pagination-meta.interface';
+import { rethrowIfUniqueViolation } from '../common/utils/postgres-unique-violation.util';
+import type { Database } from '../database/database-connection';
+import { DATABASE_CONNECTION } from '../database/database.module';
+import { characters, charactersToElements, elements } from '../database/schema';
 import { CreateElementDto } from './dto/create-element.dto';
 import { ElementQueryDto } from './dto/element-query.dto';
 import {

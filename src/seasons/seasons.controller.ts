@@ -19,8 +19,8 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AdminWrite } from 'src/common/decorators/admin-write.decorator';
-import { PublicRead } from 'src/common/decorators/public-read.decorator';
+import { AdminWrite } from '../common/decorators/admin-write.decorator';
+import { PublicRead } from '../common/decorators/public-read.decorator';
 import { CreateSeasonDto } from './dto/create-season.dto';
 import { SeasonQueryDto } from './dto/season-query.dto';
 import { SeasonDetailDto } from './dto/season-response.dto';

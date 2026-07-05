@@ -19,8 +19,8 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AdminWrite } from 'src/common/decorators/admin-write.decorator';
-import { PublicRead } from 'src/common/decorators/public-read.decorator';
+import { AdminWrite } from '../common/decorators/admin-write.decorator';
+import { PublicRead } from '../common/decorators/public-read.decorator';
 import { CreateElementDto } from './dto/create-element.dto';
 import { ElementQueryDto } from './dto/element-query.dto';
 import { ElementDetailDto } from './dto/element-response.dto';

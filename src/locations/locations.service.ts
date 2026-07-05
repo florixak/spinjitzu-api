@@ -5,17 +5,17 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { and, asc, count, desc, eq, exists, ilike, SQL } from 'drizzle-orm';
-import { ApiSuccessResponseWithPagination } from 'src/common/interfaces/api-response.interface';
-import { PaginationMeta } from 'src/common/interfaces/pagination-meta.interface';
-import { rethrowIfForeignKeyViolation } from 'src/common/utils/postgres-foreign-key-violation.util';
-import type { Database } from 'src/database/database-connection';
-import { DATABASE_CONNECTION } from 'src/database/database.module';
+import { ApiSuccessResponseWithPagination } from '../common/interfaces/api-response.interface';
+import { PaginationMeta } from '../common/interfaces/pagination-meta.interface';
+import { rethrowIfForeignKeyViolation } from '../common/utils/postgres-foreign-key-violation.util';
+import type { Database } from '../database/database-connection';
+import { DATABASE_CONNECTION } from '../database/database.module';
 import {
   locations,
   locationsToSeasons,
   realms,
   seasons,
-} from 'src/database/schema';
+} from '../database/schema';
 import { CreateLocationDto } from './dto/create-location.dto';
 import { LocationQueryDto } from './dto/location-query.dto';
 import {

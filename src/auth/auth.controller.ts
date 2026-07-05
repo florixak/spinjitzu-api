@@ -6,7 +6,7 @@ import {
   ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { AuthThrottle } from 'src/common/decorators/auth-throttle.decorator';
+import { AuthThrottle } from '../common/decorators/auth-throttle.decorator';
 import { AuthService } from './auth.service';
 import { LoginResponseDto } from './dto/login-response.dto';
 import { LoginDto } from './dto/login.dto';

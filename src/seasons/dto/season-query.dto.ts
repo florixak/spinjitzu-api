@@ -9,7 +9,7 @@ import {
   Max,
   Min,
 } from 'class-validator';
-import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
+import { PaginationQueryDto } from '../../common/dto/pagination-query.dto';
 import { SeasonType } from '../enums/season-type.enum';
 
 const SORTABLE_FIELDS = ['title', 'type', 'number', 'releaseYear'] as const;
