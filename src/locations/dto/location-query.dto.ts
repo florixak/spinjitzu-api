@@ -18,7 +18,7 @@ export class LocationQueryDto extends PaginationQueryDto {
   })
   @IsOptional()
   @Type(() => Number)
-  @IsInt()
+  @IsInt({ message: 'realmId must be an integer' })
   realmId?: number;
 
   @ApiPropertyOptional({
@@ -26,11 +26,13 @@ export class LocationQueryDto extends PaginationQueryDto {
   })
   @IsOptional()
   @Type(() => Number)
-  @IsInt()
+  @IsInt({ message: 'seasonId must be an integer' })
   seasonId?: number;
 
   @ApiPropertyOptional({ enum: SORTABLE_FIELDS, default: 'name' })
   @IsOptional()
-  @IsIn(SORTABLE_FIELDS)
+  @IsIn(SORTABLE_FIELDS, {
+    message: `sortBy must be one of: ${SORTABLE_FIELDS.join(', ')}`,
+  })
   declare sortBy?: (typeof SORTABLE_FIELDS)[number];
 }

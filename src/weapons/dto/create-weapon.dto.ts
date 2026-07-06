@@ -9,22 +9,22 @@ import {
 
 export class CreateWeaponDto {
   @ApiProperty({ description: 'The name of the weapon' })
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(255)
+  @IsNotEmpty({ message: 'name must not be empty' })
+  @IsString({ message: 'name must be a string' })
+  @MaxLength(255, { message: 'name must not exceed 255 characters' })
   name: string;
 
   @ApiProperty({ description: 'The type of the weapon' })
-  @IsString()
-  @IsNotEmpty()
-  @MaxLength(100)
+  @IsNotEmpty({ message: 'type must not be empty' })
+  @IsString({ message: 'type must be a string' })
+  @MaxLength(100, { message: 'type must not exceed 100 characters' })
   type: string;
 
   @ApiPropertyOptional({
     description: 'The description of the weapon',
   })
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'description must be a string' })
   description?: string;
 
   @ApiPropertyOptional({
@@ -32,6 +32,6 @@ export class CreateWeaponDto {
     default: false,
   })
   @IsOptional()
-  @IsBoolean()
+  @IsBoolean({ message: 'isArtifact must be true or false' })
   isArtifact?: boolean;
 }

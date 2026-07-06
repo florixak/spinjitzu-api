@@ -29,11 +29,13 @@ export class WeaponQueryDto extends PaginationQueryDto {
     if (value === 'false') return false;
     return value as boolean;
   })
-  @IsBoolean()
+  @IsBoolean({ message: 'isArtifact must be true or false' })
   isArtifact?: boolean;
 
   @ApiPropertyOptional({ enum: SORTABLE_FIELDS, default: 'name' })
   @IsOptional()
-  @IsIn(SORTABLE_FIELDS)
+  @IsIn(SORTABLE_FIELDS, {
+    message: `sortBy must be one of: ${SORTABLE_FIELDS.join(', ')}`,
+  })
   declare sortBy?: (typeof SORTABLE_FIELDS)[number];
 }

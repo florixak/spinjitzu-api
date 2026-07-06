@@ -14,6 +14,8 @@ export class RealmQueryDto extends PaginationQueryDto {
 
   @ApiPropertyOptional({ enum: SORTABLE_FIELDS, default: 'name' })
   @IsOptional()
-  @IsIn(SORTABLE_FIELDS)
+  @IsIn(SORTABLE_FIELDS, {
+    message: `sortBy must be one of: ${SORTABLE_FIELDS.join(', ')}`,
+  })
   declare sortBy?: (typeof SORTABLE_FIELDS)[number];
 }
