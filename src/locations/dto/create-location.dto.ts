@@ -1,13 +1,14 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
 
 export class CreateLocationDto {
   @ApiProperty({
     description: 'The name of the location',
-    example: 'The location is in the forest',
+    example: 'Monastery of Spinjitzu',
   })
-  @IsString()
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'name must not be empty' })
+  @IsString({ message: 'name must be a string' })
   name: string;
 
   @ApiPropertyOptional({
@@ -15,14 +16,15 @@ export class CreateLocationDto {
     example: 1,
   })
   @IsOptional()
-  @IsNumber()
+  @Type(() => Number)
+  @IsInt({ message: 'realmId must be an integer' })
   realmId?: number;
 
   @ApiPropertyOptional({
     description: 'The description of the location',
-    example: 'The location is in the forest',
+    example: 'The ninja training grounds',
   })
   @IsOptional()
-  @IsString()
+  @IsString({ message: 'description must be a string' })
   description?: string | null;
 }

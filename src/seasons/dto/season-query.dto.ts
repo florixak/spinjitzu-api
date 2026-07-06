@@ -27,7 +27,9 @@ export class SeasonQueryDto extends PaginationQueryDto {
     description: 'Season type',
   })
   @IsOptional()
-  @IsEnum(SeasonType)
+  @IsEnum(SeasonType, {
+    message: `type must be one of: ${Object.values(SeasonType).join(', ')}`,
+  })
   type?: SeasonType;
 
   @ApiPropertyOptional({
@@ -35,8 +37,8 @@ export class SeasonQueryDto extends PaginationQueryDto {
   })
   @IsOptional()
   @Type(() => Number)
-  @IsInt()
-  @Min(0)
+  @IsInt({ message: 'number must be an integer' })
+  @Min(0, { message: 'number must be at least 0' })
   number?: number;
 
   @ApiPropertyOptional({
@@ -44,13 +46,15 @@ export class SeasonQueryDto extends PaginationQueryDto {
   })
   @IsOptional()
   @Type(() => Number)
-  @IsInt()
-  @Min(1900)
-  @Max(2100)
+  @IsInt({ message: 'releaseYear must be an integer' })
+  @Min(1900, { message: 'releaseYear must be at least 1900' })
+  @Max(2100, { message: 'releaseYear must not exceed 2100' })
   releaseYear?: number;
 
   @ApiPropertyOptional({ enum: SORTABLE_FIELDS, default: 'title' })
   @IsOptional()
-  @IsIn(SORTABLE_FIELDS)
+  @IsIn(SORTABLE_FIELDS, {
+    message: `sortBy must be one of: ${SORTABLE_FIELDS.join(', ')}`,
+  })
   declare sortBy?: (typeof SORTABLE_FIELDS)[number];
 }

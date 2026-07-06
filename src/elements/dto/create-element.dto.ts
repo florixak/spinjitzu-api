@@ -7,16 +7,16 @@ export class CreateElementDto {
     example: 'Fire',
     maxLength: 100,
   })
-  @IsString()
-  @MaxLength(100)
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'name must not be empty' })
+  @IsString({ message: 'name must be a string' })
+  @MaxLength(100, { message: 'name must not exceed 100 characters' })
   name: string;
 
   @ApiPropertyOptional({
     description: 'The description of the element',
     example: 'Fire is a element that burns',
   })
-  @IsString()
   @IsOptional()
+  @IsString({ message: 'description must be a string' })
   description?: string;
 }
