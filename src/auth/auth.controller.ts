@@ -1,4 +1,11 @@
-import { Body, Controller, HttpCode, HttpStatus, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  HttpStatus,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import {
   ApiBody,
   ApiOkResponse,
@@ -11,6 +18,7 @@ import { AuthService } from './auth.service';
 import { LoginResponseDto } from './dto/login-response.dto';
 import { LoginDto } from './dto/login.dto';
 import { ExcludeInProduction } from 'src/common/decorators/exclude-prod.decorator';
+import { DisabledInProductionGuard } from 'src/common/guards/disabled-in-production.guard';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -18,6 +26,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('login')
+  @UseGuards(DisabledInProductionGuard)
   @AuthThrottle()
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Authenticate with email and password' })
