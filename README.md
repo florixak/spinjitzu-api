@@ -8,6 +8,8 @@ Inspired by [SWAPI](https://swapi.dev/), Spinjitzu API is built as a production-
 
 **Repository:** [github.com/florixak/spinjitzu-api](https://github.com/florixak/spinjitzu-api)
 
+**Swagger Docs:** [spinjitzu-api.vercel.app/docs](https://spinjitzu-api.vercel.app/docs)
+
 ## Quick start
 
 All versioned resources live under:
