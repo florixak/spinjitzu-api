@@ -14,7 +14,15 @@ async function bootstrap() {
 
   app.set('trust proxy', 1);
 
-  app.use(helmet());
+  app.use(
+    helmet({
+      contentSecurityPolicy: {
+        directives: {
+          scriptSrc: ["'self'", 'https://cdnjs.cloudflare.com'],
+        },
+      },
+    }),
+  );
 
   app.enableCors({
     origin: '*',
