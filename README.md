@@ -225,7 +225,7 @@ The API runs at `http://localhost:3000`. Swagger UI is at `http://localhost:3000
 | `DATABASE_URL` | Pooled PostgreSQL connection string (runtime) |
 | `DIRECT_DATABASE_URL` | Direct PostgreSQL connection string (migrations) |
 | `JWT_SECRET` | Secret for signing JWTs (min 32 characters) |
-| `JWT_EXPIRES_IN` | Token lifetime, e.g. `1d`, `12h` (default `1d`) |
+| `JWT_EXPIRES_IN` | Token lifetime, e.g. `43200`, `86400` (default `86400`) |
 | `ADMIN_EMAIL` | Admin account email |
 | `ADMIN_PASSWORD` | Admin account password |
 
