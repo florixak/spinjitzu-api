@@ -2,7 +2,7 @@
 
 A public REST API for the LEGO® NINJAGO® universe — characters, seasons, elements, weapons, locations, and realms.
 
-Inspired by [SWAPI](https://swapi.dev/), Spinjitzu API is built as a production-quality portfolio project: consistent responses, input validation, rate limiting, OpenAPI docs, and a read-only public surface in production.
+Spinjitzu API is built as a production-quality portfolio project: consistent responses, input validation, rate limiting, OpenAPI docs, and a read-only public surface in production.
 
 > LEGO® is a trademark of the LEGO Group of companies, which does not sponsor, authorize, or endorse this site. See [Legal disclaimer](#legal-disclaimer) below.
 
